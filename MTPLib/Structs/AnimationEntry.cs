@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using Reloaded.Memory;
+﻿using Reloaded.Memory;
 
 namespace MTPLib.Structs
 {

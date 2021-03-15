@@ -2,10 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Text;
 using MTPLib.Structs;
 using Reloaded.Memory;
 using Reloaded.Memory.Streams;
@@ -16,6 +13,7 @@ namespace MTPLib
     public unsafe class MotionPackage
     {
         private const string PropertiesFileName = "Properties.json";
+        private const string FileOrderFileName = "FileOrder.txt";
         private const string MotionExtension = "MTN";
 
         /// <summary>
@@ -47,13 +45,18 @@ namespace MTPLib
             var animationProperties = new MotionPackageAnimationProperties(this);
             var fullDirectoryPath   = Path.GetFullPath(directoryPath);
             var propertiesPath      = Path.Combine(fullDirectoryPath, PropertiesFileName);
+            var fileOrderPath = Path.Combine(fullDirectoryPath, FileOrderFileName);
 
             File.WriteAllBytes(propertiesPath, animationProperties.ToJson());
+
+            var orderList = new List<string>();
             foreach (var entry in Entries)
             {
                 var filePath = Path.Combine(fullDirectoryPath, $"{entry.FileName}.{MotionExtension}");
                 File.WriteAllBytes(filePath, entry.FileData);
+                orderList.Add($"{entry.FileName}.{MotionExtension}");
             }
+            File.AppendAllLines(fileOrderPath, orderList);
         }
 
         /// <summary>
@@ -64,17 +67,26 @@ namespace MTPLib
         {
             var fullDirectoryPath   = Path.GetFullPath(directoryPath);
             var propertiesPath      = Path.Combine(fullDirectoryPath, PropertiesFileName);
+            var fileOrderPath = Path.Combine(fullDirectoryPath, FileOrderFileName);
 
             if (!File.Exists(propertiesPath))
                 throw new FileNotFoundException($"{propertiesPath} does not exist.");
 
-            var properties = MotionPackageAnimationProperties.FromJson(propertiesPath);
-            var files      = Directory.GetFiles(fullDirectoryPath, $"*.{MotionExtension}");
+            if (!File.Exists(fileOrderPath))
+                throw new FileNotFoundException($"{fileOrderPath} does not exist.");
 
-            var animations = files.Select(x =>
+            var properties = MotionPackageAnimationProperties.FromJson(propertiesPath);
+            var fileOrder = File.ReadAllLines(fileOrderPath);
+
+            // Should be order independent if mutating MTP sizes, but this would require hardcoded index modification for most used MTPs...
+            // TODO? Add this if requested
+            // var files      = Directory.GetFiles(fullDirectoryPath, $"*.{MotionExtension}");
+            // TODO: FileNotFound check since we no longer confirm if file exists
+            var animations = fileOrder.Select(x =>
             {
-                var bytes = File.ReadAllBytes(x);
-                var fileName = Path.GetFileNameWithoutExtension(x);
+                var file = Path.Combine(fullDirectoryPath, x);
+                var bytes = File.ReadAllBytes(file);
+                var fileName = Path.GetFileNameWithoutExtension(file);
                 
                 return properties.Files.ContainsKey(fileName) ? new ManagedAnimationEntry(fileName, bytes, properties.Files[fileName]) 
                                                               : new ManagedAnimationEntry(fileName, bytes, null);
@@ -137,7 +149,16 @@ namespace MTPLib
             int[] entryOffsets = Entries.Select(x => AddRange(bytes, dummyAnimationEntryBytes)).ToArray();
 
             // Write file names.
-            int[] fileNameOffsets = Entries.Select(x => AddRange(bytes, String.GetNullTerminatedBytes(String.Win1252Encoder, x.FileName))).ToArray();
+            int[] fileNameOffsets = Entries.Select(x =>
+            {
+                int firstRef = AddRange(bytes, String.GetNullTerminatedBytes(String.Win1252Encoder, x.FileName));
+                // Must pad to next group of 4-bytes, otherwise game will fail to parse
+                while (bytes.Count % 4 > 0)
+                {
+                    bytes.Add(0x00);
+                }
+                return firstRef;
+            }).ToArray();
 
             // Write file data.
             int[] fileDataOffsets = Entries.Select(x => AddRange(bytes, x.FileData)).ToArray();
