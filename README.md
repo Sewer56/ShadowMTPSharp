@@ -10,8 +10,8 @@ This is a simple library that allows you to import and export .MTP "MotionPackag
 ## Usage (Library)
 
 1. Add this git repository as a submodule.
-2. Add Heroes.SDK to your solution.
-3. Add Heroes.SDK as a project reference to your project.
+2. Add MTPLib to your solution.
+3. Add MTPLib as a project reference to your project.
 
 For an example/sample of using the library, see the `MTPConsole` project.
 
