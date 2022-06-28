@@ -54,7 +54,7 @@ namespace MTPLib
 
             // Get File Data
             var header = MotionHeader.FromPointer(fileDataPtr);
-            Memory.CurrentProcess.ReadRaw((IntPtr) fileDataPtr, out managedAnimationEntry._fileData, header.FileSize);
+            Memory.CurrentProcess.ReadRaw((nuint) fileDataPtr, out managedAnimationEntry._fileData, header.FileSize);
 
             // Get File Tuples
             if (entry.HasProperties)
