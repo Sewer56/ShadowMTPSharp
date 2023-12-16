@@ -1,8 +1,8 @@
-﻿using Reloaded.Memory;
+﻿using Reloaded.Memory.Utilities;
 
 namespace MTPLib.Structs
 {
-    public struct MotionPackageHeader : IEndianReversible
+    public struct MotionPackageHeader
     {
         /// <summary>
         /// Always 1
@@ -45,13 +45,13 @@ namespace MTPLib.Structs
 
         public void SwapEndian()
         {
-            Endian.Reverse(ref Enabler);
-            Endian.Reverse(ref NumberOfFiles);
-            Endian.Reverse(ref Enabler2);
-            Endian.Reverse(ref _pad1);
-            Endian.Reverse(ref _unknown1);
-            Endian.Reverse(ref _unknown2);
-            Endian.Reverse(ref EntryOffset);
+            Enabler = Endian.Reverse(Enabler);
+            NumberOfFiles = Endian.Reverse(NumberOfFiles);
+            Enabler2 = Endian.Reverse(Enabler2);
+            _pad1 = Endian.Reverse(_pad1);
+            _unknown1 = Endian.Reverse(_unknown1);
+            _unknown2 = Endian.Reverse(_unknown2);
+            EntryOffset = Endian.Reverse(EntryOffset);
         }
     }
 }

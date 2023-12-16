@@ -1,4 +1,4 @@
-﻿using Reloaded.Memory;
+﻿using Reloaded.Memory.Utilities;
 
 namespace MTPLib.Structs
 {
@@ -6,7 +6,7 @@ namespace MTPLib.Structs
     /// The header of a .MTN file.
     /// This is the reduced header, not the full one.
     /// </summary>
-    public struct MotionHeader : IEndianReversible
+    public struct MotionHeader
     {
         private byte    _unknown0;
         public  byte    IsBigEndian;
@@ -28,11 +28,11 @@ namespace MTPLib.Structs
 
         public void SwapEndian()
         {
-            Endian.Reverse(ref _unknown0);
-            Endian.Reverse(ref _unknown1);
-            Endian.Reverse(ref _unknown2);
-            Endian.Reverse(ref IsBigEndian);
-            Endian.Reverse(ref FileSize);
+            _unknown0 = Endian.Reverse(_unknown0);
+            _unknown1 = Endian.Reverse(_unknown1);
+            _unknown2 = Endian.Reverse(_unknown2);
+            IsBigEndian = Endian.Reverse(IsBigEndian);
+            FileSize = Endian.Reverse(FileSize);
         }
     }
 }

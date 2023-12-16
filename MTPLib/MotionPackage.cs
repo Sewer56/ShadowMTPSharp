@@ -117,14 +117,13 @@ namespace MTPLib
             var entries       = new List<ManagedAnimationEntry>();
 
             using (var stream = new UnmanagedMemoryStream(data, sizeOfData))
-            using (var streamReader = new BufferedStreamReader(stream, 8192))
             {
-                streamReader.ReadBigEndianStruct(out MotionPackageHeader header);
-                streamReader.Seek(header.EntryOffset, SeekOrigin.Begin);
+                stream.ReadBigEndianStruct(out MotionPackageHeader header);
+                stream.Seek(header.EntryOffset, SeekOrigin.Begin);
 
                 for (int x = 0; x < header.NumberOfFiles; x++)
                 {
-                    streamReader.ReadBigEndianStruct(out AnimationEntry animationEntry);
+                    stream.ReadBigEndianStruct(out AnimationEntry animationEntry);
                     entries.Add(ManagedAnimationEntry.FromAnimationEntry(data, animationEntry));
                 }
 

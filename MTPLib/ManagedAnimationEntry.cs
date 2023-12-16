@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using MTPLib.Structs;
-using Reloaded.Memory.Sources;
+using Reloaded.Memory;
 using static MTPLib.Util.Equality;
 using String = MTPLib.Util.String;
 
@@ -54,7 +53,8 @@ namespace MTPLib
 
             // Get File Data
             var header = MotionHeader.FromPointer(fileDataPtr);
-            Memory.CurrentProcess.ReadRaw((nuint) fileDataPtr, out managedAnimationEntry._fileData, header.FileSize);
+            managedAnimationEntry._fileData = new byte[header.FileSize];
+            Memory.Instance.ReadRaw((nuint)fileDataPtr, managedAnimationEntry._fileData);
 
             // Get File Tuples
             if (entry.HasProperties)

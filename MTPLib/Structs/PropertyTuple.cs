@@ -1,8 +1,8 @@
-﻿using Reloaded.Memory;
+﻿using Reloaded.Memory.Utilities;
 
 namespace MTPLib.Structs
 {
-    public struct PropertyTuple : IEndianReversible
+    public struct PropertyTuple
     {
         private short _a;
         private short _b;
@@ -43,8 +43,8 @@ namespace MTPLib.Structs
 
         public void SwapEndian()
         {
-            Endian.Reverse(ref _a);
-            Endian.Reverse(ref _b);
+            _a = Endian.Reverse(_a);
+            _b = Endian.Reverse(_b);
         }
     }
 }
