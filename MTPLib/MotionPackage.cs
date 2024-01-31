@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using MTPLib.Structs;
 using Reloaded.Memory;
+using Reloaded.Memory.Extensions;
 using Reloaded.Memory.Streams;
+using Reloaded.Memory.Utilities;
 using String = MTPLib.Util.String;
 
 namespace MTPLib
@@ -118,12 +121,12 @@ namespace MTPLib
 
             using (var stream = new UnmanagedMemoryStream(data, sizeOfData))
             {
-                stream.ReadBigEndianStruct(out MotionPackageHeader header);
+                stream.ReadMarshalled(out MotionPackageHeader header);
                 stream.Seek(header.EntryOffset, SeekOrigin.Begin);
 
                 for (int x = 0; x < header.NumberOfFiles; x++)
                 {
-                    stream.ReadBigEndianStruct(out AnimationEntry animationEntry);
+                    stream.ReadMarshalled(out AnimationEntry animationEntry);
                     entries.Add(ManagedAnimationEntry.FromAnimationEntry(data, animationEntry));
                 }
 
@@ -140,12 +143,23 @@ namespace MTPLib
 
             var header  = Header;
             header.SwapEndian();
-            bytes.AddRange(Struct.GetBytes(ref header));
+
+            int sizeHeader = sizeof(MotionPackageHeader);
+            byte[] array = new byte[sizeHeader];
+
+            var arraySpan = new Span<byte>(array);
+            MemoryMarshal.Write(arraySpan, ref header);
+
+            bytes.AddRange(array);
 
             // Write entries
             var dummyAnimationEntry = new AnimationEntry();
-            var dummyAnimationEntryBytes = Struct.GetBytes(ref dummyAnimationEntry);
-            int[] entryOffsets = Entries.Select(x => AddRange(bytes, dummyAnimationEntryBytes)).ToArray();
+            int animationEntrySize = sizeof(AnimationEntry);
+            byte[] animationArray = new byte[animationEntrySize];
+
+            var animationArraySpan = new Span<byte>(animationArray);
+            MemoryMarshal.Write(animationArraySpan, ref dummyAnimationEntry);
+            int[] entryOffsets = Entries.Select(x => AddRange(bytes, animationArray)).ToArray();
 
             // Write file names.
             int[] fileNameOffsets = Entries.Select(x =>
@@ -189,9 +203,9 @@ namespace MTPLib
                 for (int x = 0; x < Entries.Length; x++)
                 {
                     ref var entry = ref Unsafe.AsRef<AnimationEntry>(byteArrayPtr + entryOffsets[x]);
-                    Endian.Reverse(ref fileNameOffsets[x]);
-                    Endian.Reverse(ref fileDataOffsets[x]);
-                    Endian.Reverse(ref filePropertyOffsets[x]);
+                    fileNameOffsets[x] = Endian.Reverse(fileNameOffsets[x]);
+                    fileDataOffsets[x] = Endian.Reverse(fileDataOffsets[x]);
+                    filePropertyOffsets[x] = Endian.Reverse(filePropertyOffsets[x]);
 
                     entry.FileNamePtr = fileNameOffsets[x];
                     entry.FileDataPtr = fileDataOffsets[x];
