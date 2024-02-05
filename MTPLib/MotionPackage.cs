@@ -5,11 +5,10 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using MTPLib.Structs;
-using Reloaded.Memory;
 using Reloaded.Memory.Extensions;
-using Reloaded.Memory.Streams;
 using Reloaded.Memory.Utilities;
 using String = MTPLib.Util.String;
+using StructArray = MTPLib.Util.StructArray;
 
 namespace MTPLib
 {
