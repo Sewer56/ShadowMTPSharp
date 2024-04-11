@@ -20,7 +20,7 @@
     <PackageReference Include="Reloaded.Memory" Version="7.1.0" />
     <PackageReference Include="Reloaded.Messaging.Serializer.SystemTextJson" Version="1.0.2" />
     <PackageReference Include="System.Memory" Version="4.5.5" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0" />
   </ItemGroup>
 
 </Project>
