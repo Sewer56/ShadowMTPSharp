@@ -12,10 +12,6 @@ namespace MTPConsole
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Usage: MTPConsole <paths to files to extract or directories to pack>");
-            Console.WriteLine("Example: MTPConsole BkChaos.mtp BkLarva.mtp");
-            Console.WriteLine("\nRunning with no arguments registers the .MTP extension to allow double-clicking .MTP files for extraction");
-
             if (args.Length > 0)
             {
                 foreach (var arg in args)
@@ -28,12 +24,20 @@ namespace MTPConsole
                         BuildMtp(fullPath);
                 }
             } else {
-                var classesKey = Registry.CurrentUser.OpenSubKey("Software", true)?.OpenSubKey("Classes", true);
-                var oneKey = classesKey.CreateSubKey(".mtp");
-                string myExecutable = Assembly.GetEntryAssembly().Location.Replace(".dll", ".exe");
-                string command = $"\"{myExecutable}\" \"%1\"";
-                var commandKey = oneKey.CreateSubKey("shell\\Open\\command");
-                commandKey.SetValue("", command);
+                Console.WriteLine("Usage: MTPConsole <paths to files to extract or directories to pack>");
+                Console.WriteLine("Example: MTPConsole BkChaos.mtp BkLarva.mtp");
+                Console.WriteLine("\nRunning with no arguments registers the .MTP extension to allow double-clicking .MTP files for extraction");
+
+                try
+                {
+                    var classesKey = Registry.CurrentUser.OpenSubKey("Software", true)?.OpenSubKey("Classes", true);
+                    var oneKey = classesKey.CreateSubKey(".mtp");
+                    string myExecutable = Assembly.GetEntryAssembly().Location.Replace(".dll", ".exe");
+                    string command = $"\"{myExecutable}\" \"%1\"";
+                    var commandKey = oneKey.CreateSubKey("shell\\Open\\command");
+                    commandKey.SetValue("", command);
+                }
+                catch (Exception) { /* Might fail on Wine */ }
             }
         }
 
