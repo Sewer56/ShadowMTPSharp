@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using Microsoft.Win32;
-using System.Reflection;
 using MTPLib;
 
 namespace MTPConsole
@@ -32,7 +31,7 @@ namespace MTPConsole
                 {
                     var classesKey = Registry.CurrentUser.OpenSubKey("Software", true)?.OpenSubKey("Classes", true);
                     var oneKey = classesKey.CreateSubKey(".mtp");
-                    string myExecutable = Assembly.GetEntryAssembly().Location.Replace(".dll", ".exe");
+                    string myExecutable = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
                     string command = $"\"{myExecutable}\" \"%1\"";
                     var commandKey = oneKey.CreateSubKey("shell\\Open\\command");
                     commandKey.SetValue("", command);
@@ -64,7 +63,6 @@ namespace MTPConsole
         /* Utility */
         private static bool IsMtp(string fullPath)       => File.Exists(fullPath);
         private static bool IsDirectory(string fullPath) => Directory.Exists(fullPath);
-
         private static string InitializeDirectory(string directoryPath)
         {
             if (Directory.Exists(directoryPath))

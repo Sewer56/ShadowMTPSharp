@@ -2,9 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
-
     <IsPackable>false</IsPackable>
-
     <Version>$(VersionPrefix)1.0.5</Version>
   </PropertyGroup>
 

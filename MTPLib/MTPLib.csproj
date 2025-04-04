@@ -5,7 +5,6 @@
     <Version>$(VersionPrefix)1.0.5</Version>
     <LangVersion>latest</LangVersion>
 	<RollForward>LatestMajor</RollForward>
-	<PublishSingleFile>true</PublishSingleFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
