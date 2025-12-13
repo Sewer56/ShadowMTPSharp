@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>$(VersionPrefix)1.0.5</Version>
-    <LangVersion>latest</LangVersion>
+    <Version>$(VersionPrefix)1.0.6</Version>
+    <LangVersion>14.0</LangVersion>
 	<RollForward>LatestMajor</RollForward>
   </PropertyGroup>
 
@@ -19,7 +19,7 @@
     <PackageReference Include="Reloaded.Memory" Version="7.1.0" />
     <PackageReference Include="Reloaded.Messaging.Serializer.SystemTextJson" Version="1.0.2" />
     <PackageReference Include="System.Memory" Version="4.6.3" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.3" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="10.0.1" />
   </ItemGroup>
 
 </Project>

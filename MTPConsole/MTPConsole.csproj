@@ -2,12 +2,12 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <RollForward>LatestMajor</RollForward>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>14.0</LangVersion>
     <PublishSingleFile>true</PublishSingleFile>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <Version>$(VersionPrefix)1.0.5</Version>
+    <Version>$(VersionPrefix)1.0.6</Version>
   </PropertyGroup>
 
   <ItemGroup>
