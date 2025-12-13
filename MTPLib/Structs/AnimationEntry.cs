@@ -1,11 +1,13 @@
 ﻿using Reloaded.Memory;
+using Reloaded.Memory.Interfaces;
+using Reloaded.Memory.Utilities;
 
 namespace MTPLib.Structs
 {
     /// <summary>
     /// An individual file entry in the <see cref="MotionPackage"/> archive.
     /// </summary>
-    public unsafe struct AnimationEntry : IEndianReversible
+    public unsafe struct AnimationEntry : ICanReverseEndian
     {
         public int FileNamePtr;
         public int FileDataPtr;
@@ -20,11 +22,11 @@ namespace MTPLib.Structs
         /// </summary>
         public bool HasProperties => PropertyTuplePtr != 0;
 
-        public void SwapEndian()
+        public void ReverseEndian()
         {
-            Endian.Reverse(ref FileNamePtr);
-            Endian.Reverse(ref FileDataPtr);
-            Endian.Reverse(ref PropertyTuplePtr);
+            FileNamePtr = Endian.Reverse(FileNamePtr);
+            FileDataPtr = Endian.Reverse(FileDataPtr);
+            PropertyTuplePtr =Endian.Reverse(PropertyTuplePtr);
         }
     }
 }

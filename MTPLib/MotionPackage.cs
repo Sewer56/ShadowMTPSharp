@@ -4,8 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using MTPLib.Structs;
-using Reloaded.Memory;
 using Reloaded.Memory.Streams;
+using Reloaded.Memory.Utilities;
 using String = MTPLib.Util.String;
 
 namespace MTPLib
@@ -117,7 +117,7 @@ namespace MTPLib
             var entries       = new List<ManagedAnimationEntry>();
 
             using (var stream = new UnmanagedMemoryStream(data, sizeOfData))
-            using (var streamReader = new BufferedStreamReader(stream, 8192))
+            using (var streamReader = new BufferedStreamReader<UnmanagedMemoryStream>(stream, 8192))
             {
                 streamReader.ReadBigEndianStruct(out MotionPackageHeader header);
                 streamReader.Seek(header.EntryOffset, SeekOrigin.Begin);
@@ -140,12 +140,12 @@ namespace MTPLib
             var bytes   = new List<byte>(1000000);
 
             var header  = Header;
-            header.SwapEndian();
-            bytes.AddRange(Struct.GetBytes(ref header));
+            header.ReverseEndian();
+            bytes.AddRange(Util.Struct.GetBytes(ref header));
 
             // Write entries
             var dummyAnimationEntry = new AnimationEntry();
-            var dummyAnimationEntryBytes = Struct.GetBytes(ref dummyAnimationEntry);
+            var dummyAnimationEntryBytes = Util.Struct.GetBytes(ref dummyAnimationEntry);
             int[] entryOffsets = Entries.Select(x => AddRange(bytes, dummyAnimationEntryBytes)).ToArray();
 
             // Write file names.
@@ -170,12 +170,12 @@ namespace MTPLib
                 {
                     // Temporarily swap out the endian of all tuples before writing to array, then swap back.
                     for (int i = 0; i < x.Tuples.Length; i++)
-                        x.Tuples[i].SwapEndian();
+                        x.Tuples[i].ReverseEndian();
 
-                    var result = AddRange(bytes, StructArray.GetBytes(x.Tuples));
+                    var result = AddRange(bytes, Util.StructArray.GetBytes(x.Tuples));
 
                     for (int i = 0; i < x.Tuples.Length; i++)
-                        x.Tuples[i].SwapEndian();
+                        x.Tuples[i].ReverseEndian();
 
                     return result;
                 }
@@ -190,9 +190,9 @@ namespace MTPLib
                 for (int x = 0; x < Entries.Length; x++)
                 {
                     ref var entry = ref Unsafe.AsRef<AnimationEntry>(byteArrayPtr + entryOffsets[x]);
-                    Endian.Reverse(ref fileNameOffsets[x]);
-                    Endian.Reverse(ref fileDataOffsets[x]);
-                    Endian.Reverse(ref filePropertyOffsets[x]);
+                    fileNameOffsets[x] = Endian.Reverse(fileNameOffsets[x]);
+                    fileDataOffsets[x] = Endian.Reverse(fileDataOffsets[x]);
+                    filePropertyOffsets[x] = Endian.Reverse(filePropertyOffsets[x]);
 
                     entry.FileNamePtr = fileNameOffsets[x];
                     entry.FileDataPtr = fileDataOffsets[x];

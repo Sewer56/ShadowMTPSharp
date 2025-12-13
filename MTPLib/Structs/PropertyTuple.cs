@@ -1,8 +1,10 @@
 ﻿using Reloaded.Memory;
+using Reloaded.Memory.Interfaces;
+using Reloaded.Memory.Utilities;
 
 namespace MTPLib.Structs
 {
-    public struct PropertyTuple : IEndianReversible
+    public struct PropertyTuple : ICanReverseEndian
     {
         private short _a;
         private short _b;
@@ -41,10 +43,10 @@ namespace MTPLib.Structs
         public override bool Equals(object obj) => obj is PropertyTuple other && Equals(other);
         public override int GetHashCode() => (A.GetHashCode() * 397) ^ B.GetHashCode();
 
-        public void SwapEndian()
+        public void ReverseEndian()
         {
-            Endian.Reverse(ref _a);
-            Endian.Reverse(ref _b);
+            _a = Endian.Reverse(_a);
+            _b = Endian.Reverse(_b);
         }
     }
 }
