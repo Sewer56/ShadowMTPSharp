@@ -1,5 +1,4 @@
-﻿using Reloaded.Memory;
-using Reloaded.Memory.Interfaces;
+﻿using Reloaded.Memory.Interfaces;
 using Reloaded.Memory.Utilities;
 
 namespace MTPLib.Structs

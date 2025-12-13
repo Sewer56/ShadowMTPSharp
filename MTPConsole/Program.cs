@@ -11,6 +11,7 @@ namespace MTPConsole
 
         static void Main(string[] args)
         {
+            Console.WriteLine("MTPConsole v1.1.0");
             if (args.Length > 0)
             {
                 foreach (var arg in args)
@@ -23,9 +24,9 @@ namespace MTPConsole
                         BuildMtp(fullPath);
                 }
             } else {
-                Console.WriteLine("Usage: MTPConsole <paths to files to extract or directories to pack>");
-                Console.WriteLine("Example: MTPConsole BkChaos.mtp BkLarva.mtp");
-                Console.WriteLine("\nRunning with no arguments registers the .MTP extension to allow double-clicking .MTP files for extraction");
+                Console.WriteLine("Usage: MTPConsole.exe <paths to files to extract or directories to pack>");
+                Console.WriteLine("Example: MTPConsole.exe BkChaos.mtp BkLarva.mtp");
+                Console.WriteLine("\nRunning with no arguments registers the .mtp extension to allow double-clicking .mtp files for extraction");
 
                 try
                 {

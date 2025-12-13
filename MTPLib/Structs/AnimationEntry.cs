@@ -1,5 +1,4 @@
-﻿using Reloaded.Memory;
-using Reloaded.Memory.Interfaces;
+﻿using Reloaded.Memory.Interfaces;
 using Reloaded.Memory.Utilities;
 
 namespace MTPLib.Structs
@@ -26,7 +25,7 @@ namespace MTPLib.Structs
         {
             FileNamePtr = Endian.Reverse(FileNamePtr);
             FileDataPtr = Endian.Reverse(FileDataPtr);
-            PropertyTuplePtr =Endian.Reverse(PropertyTuplePtr);
+            PropertyTuplePtr = Endian.Reverse(PropertyTuplePtr);
         }
     }
 }

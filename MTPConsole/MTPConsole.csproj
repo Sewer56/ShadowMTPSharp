@@ -7,7 +7,7 @@
     <LangVersion>14.0</LangVersion>
     <PublishSingleFile>true</PublishSingleFile>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <Version>$(VersionPrefix)1.0.6</Version>
+    <Version>$(VersionPrefix)1.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

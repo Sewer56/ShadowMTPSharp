@@ -137,16 +137,27 @@ namespace MTPLib
         /// </summary>
         public byte[] ToMtp()
         {
-            var bytes   = new List<byte>(1000000);
+            var bytes = new List<byte>(1000000);
 
-            var header  = Header;
+            var header = Header;
             header.ReverseEndian();
-            bytes.AddRange(Util.Struct.GetBytes(ref header));
+
+            // Write header
+            var headerBytes = new byte[sizeof(MotionPackageHeader)];
+            fixed (byte* headerPtr = headerBytes)
+            {
+                *(MotionPackageHeader*)headerPtr = header;
+            }
+            bytes.AddRange(headerBytes);
 
             // Write entries
             var dummyAnimationEntry = new AnimationEntry();
-            var dummyAnimationEntryBytes = Util.Struct.GetBytes(ref dummyAnimationEntry);
-            int[] entryOffsets = Entries.Select(x => AddRange(bytes, dummyAnimationEntryBytes)).ToArray();
+            var dummyAnimationEntryBytes = new byte[sizeof(AnimationEntry)];
+            fixed (byte* daePtr = dummyAnimationEntryBytes)
+            {
+                *(AnimationEntry*)daePtr = dummyAnimationEntry;
+            }
+             int[] entryOffsets = Entries.Select(x => AddRange(bytes, dummyAnimationEntryBytes)).ToArray();
 
             // Write file names.
             int[] fileNameOffsets = Entries.Select(x =>
@@ -164,24 +175,34 @@ namespace MTPLib
             int[] fileDataOffsets = Entries.Select(x => AddRange(bytes, x.FileData)).ToArray();
 
             // Write extra properties.
-            int[] filePropertyOffsets = Entries.Select(x =>
+            int[] filePropertyOffsets = new int[Entries.Length];
+            for (int x = 0; x < Entries.Length; x++)
             {
-                if (x.Tuples != null)
+                var tuples = Entries[x].Tuples;
+                if (tuples != null && tuples.Length > 0)
                 {
-                    // Temporarily swap out the endian of all tuples before writing to array, then swap back.
-                    for (int i = 0; i < x.Tuples.Length; i++)
-                        x.Tuples[i].ReverseEndian();
+                    int structSize = sizeof(PropertyTuple);
+                    int totalSize = checked(structSize * tuples.Length);
+                    var buffer = new byte[totalSize];
 
-                    var result = AddRange(bytes, Util.StructArray.GetBytes(x.Tuples));
+                    fixed (byte* bufferPtr = buffer)
+                    {
+                        PropertyTuple* dest = (PropertyTuple*)bufferPtr;
+                        for (int i = 0; i < tuples.Length; i++)
+                        {
+                            var t = tuples[i];
+                            t.ReverseEndian();
+                            dest[i] = t;
+                        }
+                    }
 
-                    for (int i = 0; i < x.Tuples.Length; i++)
-                        x.Tuples[i].ReverseEndian();
-
-                    return result;
+                    filePropertyOffsets[x] = AddRange(bytes, buffer);
                 }
-
-                return 0;
-            }).ToArray();
+                else
+                {
+                    filePropertyOffsets[x] = 0;
+                }
+            }
 
             // Fix Offsets
             var byteArray = bytes.ToArray();
