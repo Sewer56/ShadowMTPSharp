@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using MTPLib.Structs;
-using Reloaded.Memory.Sources;
 using static MTPLib.Util.Equality;
 using String = MTPLib.Util.String;
 
@@ -54,7 +53,12 @@ namespace MTPLib
 
             // Get File Data
             var header = MotionHeader.FromPointer(fileDataPtr);
-            Memory.CurrentProcess.ReadRaw((nuint) fileDataPtr, out managedAnimationEntry._fileData, header.FileSize);
+            // Manual copy from unmanaged pointer into managed byte[]
+            managedAnimationEntry._fileData = new byte[header.FileSize];
+            for (int i = 0; i < header.FileSize; i++)
+            {
+                managedAnimationEntry._fileData[i] = fileDataPtr[i];
+            }
 
             // Get File Tuples
             if (entry.HasProperties)
@@ -65,7 +69,7 @@ namespace MTPLib
                 void AddTuple()
                 {
                     tuple = *tuplePtr;
-                    tuple.SwapEndian();
+                    tuple.ReverseEndian();
                     tuples.Add(tuple);
                 }
 

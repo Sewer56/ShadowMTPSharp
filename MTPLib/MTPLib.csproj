@@ -16,7 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Reloaded.Memory" Version="7.1.0" />
+    <PackageReference Include="Reloaded.Memory" Version="9.4.3" />
     <PackageReference Include="Reloaded.Messaging.Serializer.SystemTextJson" Version="1.0.2" />
     <PackageReference Include="System.Memory" Version="4.6.3" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="10.0.1" />
