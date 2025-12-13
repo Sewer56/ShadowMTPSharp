@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using MTPLib.Structs;
 using static MTPLib.Util.Equality;
 using String = MTPLib.Util.String;

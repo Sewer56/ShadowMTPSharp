@@ -1,5 +1,4 @@
-﻿using Reloaded.Memory;
-using Reloaded.Memory.Interfaces;
+﻿using Reloaded.Memory.Interfaces;
 using Reloaded.Memory.Utilities;
 
 namespace MTPLib.Structs
@@ -33,14 +32,14 @@ namespace MTPLib.Structs
 
         /// <summary>
         /// Retrieves a <see cref="MotionPackageHeader"/> from a <see cref="MotionPackage"/>.
-        /// Note: Returns as default/little endian. Call <see cref="SwapEndian"/> before writing to file.
+        /// Note: Returns as default/little endian. Call <see cref="ReverseEndian"/> before writing to file.
         /// </summary>
         public static MotionPackageHeader FromPackage(MotionPackage package)
         {
             var header = new MotionPackageHeader();
             header.Enabler = 1;
             header.Enabler2 = 1;
-            header.NumberOfFiles = (short) package.Entries.Length;
+            header.NumberOfFiles = checked((short)package.Entries.Length);
             header.EntryOffset = 20;
             return header;
         }
