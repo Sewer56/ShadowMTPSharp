@@ -119,12 +119,12 @@ namespace MTPLib
             using (var stream = new UnmanagedMemoryStream(data, sizeOfData))
             using (var streamReader = new BufferedStreamReader<UnmanagedMemoryStream>(stream, 8192))
             {
-                streamReader.ReadBigEndianStruct(out MotionPackageHeader header);
+                streamReader.ReadLittleEndianStruct(out MotionPackageHeader header);
                 streamReader.Seek(header.EntryOffset, SeekOrigin.Begin);
 
                 for (int x = 0; x < header.NumberOfFiles; x++)
                 {
-                    streamReader.ReadBigEndianStruct(out AnimationEntry animationEntry);
+                    streamReader.ReadLittleEndianStruct(out AnimationEntry animationEntry);
                     entries.Add(ManagedAnimationEntry.FromAnimationEntry(data, animationEntry));
                 }
 
@@ -140,7 +140,7 @@ namespace MTPLib
             var bytes = new List<byte>(1000000);
 
             var header = Header;
-            header.ReverseEndian();
+            //header.ReverseEndian();
 
             // Write header
             var headerBytes = new byte[sizeof(MotionPackageHeader)];
@@ -191,7 +191,7 @@ namespace MTPLib
                         for (int i = 0; i < tuples.Length; i++)
                         {
                             var t = tuples[i];
-                            t.ReverseEndian();
+                            //t.ReverseEndian();
                             dest[i] = t;
                         }
                     }

@@ -68,7 +68,7 @@ namespace MTPLib
                 void AddTuple()
                 {
                     tuple = *tuplePtr;
-                    tuple.ReverseEndian();
+                    //tuple.ReverseEndian();
                     tuples.Add(tuple);
                 }
 

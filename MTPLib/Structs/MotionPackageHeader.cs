@@ -46,13 +46,13 @@ namespace MTPLib.Structs
 
         public void ReverseEndian()
         {
-            Enabler = Endian.Reverse(Enabler);
+/*            Enabler = Endian.Reverse(Enabler);
             NumberOfFiles = Endian.Reverse(NumberOfFiles);
             Enabler2 = Endian.Reverse(Enabler2);
             _pad1 = Endian.Reverse(_pad1);
             _unknown1 = Endian.Reverse(_unknown1);
             _unknown2 = Endian.Reverse(_unknown2);
-            EntryOffset = Endian.Reverse(EntryOffset);
+            EntryOffset = Endian.Reverse(EntryOffset);*/
         }
     }
 }
